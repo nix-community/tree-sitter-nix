@@ -4,7 +4,7 @@
   "description": "Tree Sitter grammar for Nix",
   "main": "index.js",
   "scripts": {
-    "test": "tree-sitter test"
+    "test": "tree-sitter test && find examples/*.nix -exec tree-sitter parse {} +"
   },
   "repository": {
     "type": "git",
