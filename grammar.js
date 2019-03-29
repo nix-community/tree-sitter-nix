@@ -156,12 +156,14 @@ module.exports = grammar({
       $.hpath,
       $.spath,
       $.uri,
-      seq('(', $._expr, ')'),
+      $.quantity,
       $.attrset,
       $.let_attrset,
       $.rec_attrset,
       $.list
     ),
+
+    quantity: $ => seq('(', $._expr, ')'),
 
     attrset: $ => seq('{', optional($._binds), '}'),
     let_attrset: $ => seq('let', '{', optional($._binds), '}'),

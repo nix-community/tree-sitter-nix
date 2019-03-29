@@ -338,4 +338,4 @@ parens
 ---
 
 (expression
-    (integer))
+    (quantity (integer)))
