@@ -207,7 +207,7 @@ let inherit (a) b "c" ${d}; in 123
     (let
         (binds
             (inherit
-                (identifier)
+                (quantity (identifier))
                 (attrs (identifier) (string) (interpolation (identifier)))))
         (integer)))
 

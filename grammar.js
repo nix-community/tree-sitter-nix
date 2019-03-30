@@ -193,7 +193,7 @@ module.exports = grammar({
     bind: $ => seq($.attrpath, '=', $._expr, ';'),
     inherit: $ => choice(
       seq("inherit", $.attrs, ';'),
-      seq("inherit", '(', $._expr, ')', $.attrs, ';'),
+      seq("inherit", $.quantity, $.attrs, ';'),
     ),
 
     attrpath: $ => sep1($._attr, "."),

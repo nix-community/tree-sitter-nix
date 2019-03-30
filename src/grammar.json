@@ -1441,16 +1441,8 @@
               "value": "inherit"
             },
             {
-              "type": "STRING",
-              "value": "("
-            },
-            {
               "type": "SYMBOL",
-              "name": "_expr"
-            },
-            {
-              "type": "STRING",
-              "value": ")"
+              "name": "quantity"
             },
             {
               "type": "SYMBOL",
