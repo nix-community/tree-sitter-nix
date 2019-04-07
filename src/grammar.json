@@ -1157,7 +1157,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "quantity"
+          "name": "parenthesized"
         },
         {
           "type": "SYMBOL",
@@ -1177,7 +1177,7 @@
         }
       ]
     },
-    "quantity": {
+    "parenthesized": {
       "type": "SEQ",
       "members": [
         {
@@ -1442,7 +1442,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "quantity"
+              "name": "parenthesized"
             },
             {
               "type": "SYMBOL",
