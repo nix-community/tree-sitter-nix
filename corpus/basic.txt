@@ -212,6 +212,30 @@ let inherit (a) b "c" ${d}; in 123
         (integer)))
 
 ====================
+let with comments
+====================
+
+let
+  # hello
+  a = 123;
+  # hello
+  b = 456;
+  # hello
+in 1
+
+---
+
+(expression
+    (let
+        (comment)
+        (binds
+            (bind (attrpath (identifier)) (integer))
+            (comment)
+            (bind (attrpath (identifier)) (integer)))
+        (comment)
+        (integer)))
+
+====================
 function
 ====================
 
