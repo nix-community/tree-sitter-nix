@@ -18,18 +18,20 @@ static void skip(TSLexer *lexer) {
 }
 
 static bool scan_str(TSLexer *lexer) {
-  // We want to delegate the scanning of the start-of-string/end-of-string '"'
-  // character to the grammar defined in grammar.js.
-  // So the idea is we track if we've seen any string content,
-  // and if we see EOF or an unescaped '"' char _and_ we haven't consumed any string content,
-  // we return false to indicate to tree-sitter that our custom scanner has not found
-  // a token.
-  // Additionally, if we come across an escape sequence and we already have content,
-  // we want to mark the end of that content and stop scanning (i.e. return true);
-  // when tree-sitter calls us next, we'll resume from where we left off
-  // (i.e. right at the start of the escape sequence).
+  /*
+   * We want to delegate the scanning of the start-of-string/end-of-string '"'
+   * character to the grammar defined in grammar.js.
+   * So the idea is we track if we've seen any string content,
+   * and if we see EOF or an unescaped '"' char _and_ we haven't consumed any string content,
+   * we return false to indicate to tree-sitter that our custom scanner has not found
+   * a token.
+   * Additionally, if we come across an escape sequence and we already have content,
+   * we want to mark the end of that content and stop scanning (i.e. return true);
+   * when tree-sitter calls us next, we'll resume from where we left off
+   * (i.e. right at the start of the escape sequence).
+   */
   bool has_content = false;
-  
+
   lexer->result_symbol = STR_CONTENT;
 
   while (true) {
@@ -45,7 +47,7 @@ static bool scan_str(TSLexer *lexer) {
         lexer->mark_end(lexer);
         if (!has_content) {
           advance(lexer);
-          // accept anything (other than EOF) following the '\\'
+          /* accept anything (other than EOF) following the '\\' */
           if (lexer->eof(lexer)) {
             return false;
           }
@@ -64,8 +66,10 @@ static bool scan_str(TSLexer *lexer) {
             return false;
           }
         } else if (lexer->lookahead != '"' && lexer->lookahead != '\\' ) {
-          // any char following '$' other than '"', '\\' and '{' (which was handled above)
-          // should be consumed as additional string content.
+          /*
+           * any char following '$' other than '"', '\\' and '{' (which was handled above)
+           * should be consumed as additional string content.
+           */
           advance(lexer);
           lexer->mark_end(lexer);
         }
@@ -92,7 +96,7 @@ static bool scan_str(TSLexer *lexer) {
 }
 
 static bool scan_ind_str(TSLexer *lexer) {
-  // See the comment about has_content in scan_str().
+  /* See the comment about has_content in scan_str(). */
   bool has_content = false;
 
   lexer->result_symbol = IND_STR_CONTENT;
@@ -109,8 +113,10 @@ static bool scan_ind_str(TSLexer *lexer) {
             return false;
           }
         } else if (lexer->lookahead != '\'') {
-          // any char following '$' other than '\'' and '{' (which was handled above)
-          // should be consumed as additional string content.
+          /*
+           * any char following '$' other than '\'' and '{' (which was handled above)
+           * should be consumed as additional string content.
+           */
           advance(lexer);
           lexer->mark_end(lexer);
         }
@@ -131,7 +137,7 @@ static bool scan_ind_str(TSLexer *lexer) {
           } else if (lexer->lookahead == '\\') {
             if (!has_content) {
               advance(lexer);
-              // accept anything (other than EOF) following the '\\'
+              /* accept anything (other than EOF) following the '\\' */
               if (lexer->eof(lexer)) {
                 return false;
               }
