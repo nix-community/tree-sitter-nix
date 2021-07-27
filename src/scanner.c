@@ -1,4 +1,9 @@
 #include <tree_sitter/parser.h>
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum TokenType {
   STR_CONTENT,
@@ -194,10 +199,6 @@ static bool scan(TSLexer *lexer, const bool *valid_symbols) {
 
   return false;
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 void *tree_sitter_nix_external_scanner_create() {
   return NULL;
