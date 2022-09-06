@@ -44,6 +44,7 @@
   "}" @punctuation.special) @embedded
 
 (escape_sequence) @escape
+(dollar_escape) @escape
 
 (function_expression
   universal: (identifier) @variable.parameter

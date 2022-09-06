@@ -1038,6 +1038,10 @@
       "required": false,
       "types": [
         {
+          "type": "dollar_escape",
+          "named": true
+        },
+        {
           "type": "escape_sequence",
           "named": true
         },
@@ -1558,6 +1562,10 @@
       "required": false,
       "types": [
         {
+          "type": "dollar_escape",
+          "named": true
+        },
+        {
           "type": "escape_sequence",
           "named": true
         },
@@ -1930,6 +1938,10 @@
   },
   {
     "type": "comment",
+    "named": true
+  },
+  {
+    "type": "dollar_escape",
     "named": true
   },
   {

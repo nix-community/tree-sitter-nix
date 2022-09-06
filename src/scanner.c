@@ -5,6 +5,8 @@ enum TokenType {
   INDENTED_STRING_FRAGMENT,
   PATH_START,
   PATH_FRAGMENT,
+  DOLLAR_ESCAPE,
+  INDENTED_DOLLAR_ESCAPE,
 };
 
 static void advance(TSLexer *lexer) {
@@ -13,6 +15,35 @@ static void advance(TSLexer *lexer) {
 
 static void skip(TSLexer *lexer) {
   lexer->advance(lexer, true);
+}
+
+static bool scan_dollar_escape(TSLexer *lexer) {
+  lexer->result_symbol = DOLLAR_ESCAPE;
+  advance(lexer);
+  lexer->mark_end(lexer);
+    if (lexer->lookahead == '$') {
+      return true;
+  } else {
+    return false;
+  }
+}
+
+static bool scan_indented_dollar_escape(TSLexer *lexer) {
+  lexer->result_symbol = INDENTED_DOLLAR_ESCAPE;
+  advance(lexer);
+  lexer->mark_end(lexer);
+    if (lexer->lookahead == '$') {
+      return true;
+  } else {
+    if (lexer->lookahead == '\\') {
+      advance(lexer);
+      if (lexer->lookahead == '$') {
+        lexer->mark_end(lexer);
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 // Here we only parse literal fragment inside a string.
@@ -152,11 +183,24 @@ bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
   // We should not consume any content as string fragment during error recovery, or we'll break
   // more valid grammar below.
   // The test 'attrset typing field following string' covers this.
-  if (valid_symbols[STRING_FRAGMENT] && valid_symbols[INDENTED_STRING_FRAGMENT] && valid_symbols[PATH_START] && valid_symbols[PATH_FRAGMENT] ) {
+  if (valid_symbols[STRING_FRAGMENT] &&
+      valid_symbols[INDENTED_STRING_FRAGMENT] && valid_symbols[PATH_START] &&
+      valid_symbols[PATH_FRAGMENT] && valid_symbols[DOLLAR_ESCAPE] &&
+      valid_symbols[INDENTED_DOLLAR_ESCAPE]) {
     return false;
   } else if (valid_symbols[STRING_FRAGMENT]) {
+    if (lexer->lookahead == '\\') {
+      return scan_dollar_escape(lexer);
+    }
     return scan_string_fragment(lexer);
   } else if (valid_symbols[INDENTED_STRING_FRAGMENT]) {
+    if (lexer->lookahead == '\'') {
+      lexer->mark_end(lexer);
+      advance(lexer);
+      if (lexer->lookahead == '\'') {
+        return scan_indented_dollar_escape(lexer);
+      }
+    }
     return scan_indented_string_fragment(lexer);
   } else if (valid_symbols[PATH_FRAGMENT] && is_path_char(lexer->lookahead)) {
     // path_fragments should be scanned as immediate tokens, with no preceding extras.
