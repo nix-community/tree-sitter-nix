@@ -1521,8 +1521,31 @@
                 "name": "interpolation"
               },
               {
-                "type": "SYMBOL",
-                "name": "escape_sequence"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "escape_sequence"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "dollar_escape"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "$"
+                        },
+                        "named": true,
+                        "value": "string_fragment"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1537,7 +1560,7 @@
       "type": "IMMEDIATE_TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "\\\\(.|\\s)"
+        "value": "\\\\([^$]|\\s)"
       }
     },
     "indented_string_expression": {
@@ -1566,13 +1589,41 @@
                 "name": "interpolation"
               },
               {
-                "type": "ALIAS",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_indented_escape_sequence"
-                },
-                "named": true,
-                "value": "escape_sequence"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_indented_escape_sequence"
+                    },
+                    "named": true,
+                    "value": "escape_sequence"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "_indented_dollar_escape"
+                        },
+                        "named": true,
+                        "value": "dollar_escape"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "STRING",
+                          "value": "$"
+                        },
+                        "named": true,
+                        "value": "string_fragment"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1587,7 +1638,7 @@
       "type": "IMMEDIATE_TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "'''|''\\$|''\\\\(.|\\s)"
+        "value": "'''|''\\\\([^$]|\\s)"
       }
     },
     "binding_set": {
@@ -1920,6 +1971,14 @@
     {
       "type": "SYMBOL",
       "name": "path_fragment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "dollar_escape"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_indented_dollar_escape"
     }
   ],
   "inline": [],

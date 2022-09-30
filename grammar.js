@@ -39,6 +39,8 @@ module.exports = grammar({
     $._indented_string_fragment,
     $._path_start,
     $.path_fragment,
+    $.dollar_escape,
+    $._indented_dollar_escape,
   ],
 
   word: $ => $.keyword,
@@ -230,22 +232,26 @@ module.exports = grammar({
       repeat(choice(
         $.string_fragment,
         $.interpolation,
-        $.escape_sequence
+        choice($.escape_sequence,
+          seq($.dollar_escape, alias('$', $.string_fragment))
+        )
       )),
       '"'
     ),
-    escape_sequence: $ => token.immediate(/\\(.|\s)/), // Can also escape newline.
+
+    escape_sequence: $ => token.immediate(/\\([^$]|\s)/), // Can also escape newline.
 
     indented_string_expression: $ => seq(
       "''",
       repeat(choice(
         alias($._indented_string_fragment, $.string_fragment),
         $.interpolation,
-        alias($._indented_escape_sequence, $.escape_sequence),
-      )),
+        choice(alias($._indented_escape_sequence, $.escape_sequence),
+          seq(alias($._indented_dollar_escape, $.dollar_escape), alias('$', $.string_fragment))
+      ))),
       "''"
     ),
-    _indented_escape_sequence: $ => token.immediate(/'''|''\$|''\\(.|\s)/), // Can also escape newline.
+    _indented_escape_sequence: $ => token.immediate(/'''|''\\([^$]|\s)/), // Can also escape newline.
 
     binding_set: $ => repeat1(field('binding', choice($.binding, $.inherit, $.inherit_from))),
     binding: $ => seq(field('attrpath', $.attrpath), '=', field('expression', $._expression), ';'),
