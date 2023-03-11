@@ -4,7 +4,7 @@ description = "nix grammar for the tree-sitter parsing library"
 version = "0.0.1"
 keywords = ["incremental", "parsing", "nix"]
 categories = ["parsing", "text-editors"]
-repository = "https://github.com/cstrahan/tree-sitter-nix"
+repository = "https://github.com/nix-community/tree-sitter-nix"
 edition = "2018"
 license = "MIT"
 
