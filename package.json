@@ -9,19 +9,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cstrahan/tree-sitter-nix.git"
+    "url": "git+https://github.com/nix-community/tree-sitter-nix.git"
   },
   "author": "Charles Strahan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cstrahan/tree-sitter-nix/issues"
+    "url": "https://github.com/nix-community/tree-sitter-nix/issues"
   },
-  "homepage": "https://github.com/cstrahan/tree-sitter-nix#readme",
+  "homepage": "https://github.com/nix-community/tree-sitter-nix#readme",
   "dependencies": {
-    "nan": "^2.14.2"
+    "nan": "^2.17.0"
   },
   "devDependencies": {
-    "tree-sitter-cli": "^0.20.6"
+    "tree-sitter-cli": "^0.20.7"
   },
   "tree-sitter": [
     {
