@@ -31,7 +31,7 @@
             chmod +w -R src
             cd src
 
-            tree-sitter generate
+            HOME=$(mktemp -d) npm run generate
             diff -r src/ ${self}/src
 
             touch $out
