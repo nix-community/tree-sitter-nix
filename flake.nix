@@ -21,6 +21,8 @@
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        inherit (pkgs) lib;
+
         npmlock2nix' = pkgs.callPackage npmlock2nix { };
         craneLib = crane.lib.${system};
 
@@ -52,6 +54,11 @@
 
           build = self.packages.${system}.tree-sitter-nix;
 
+          rust-bindings = craneLib.buildPackage {
+            src = self;
+          };
+        } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+          # Requires xcode
           node-bindings = npmlock2nix'.v2.build {
             src = self;
             inherit (self.devShells.${system}.default) nativeBuildInputs;
@@ -67,9 +74,6 @@
             '';
           };
 
-          rust-bindings = craneLib.buildPackage {
-            src = self;
-          };
         };
 
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
