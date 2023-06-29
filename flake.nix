@@ -4,12 +4,17 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    npmlock2nix = {
+      url = "github:nix-community/npmlock2nix";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils }: (
+  outputs = { self, nixpkgs, flake-utils, npmlock2nix }: (
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        npmlock2nix' = pkgs.callPackage npmlock2nix { };
 
       in
       {
@@ -38,6 +43,21 @@
           '';
 
           build = self.packages.${system}.tree-sitter-nix;
+
+          node-bindings = npmlock2nix'.v2.build {
+            src = self;
+            inherit (self.devShells.${system}.default) nativeBuildInputs;
+            inherit (pkgs) nodejs;
+
+            buildCommands = [
+              "${pkgs.nodePackages.node-gyp}/bin/node-gyp configure"
+              "npm run build"
+            ];
+
+            installPhase = ''
+              touch $out
+            '';
+          };
         };
 
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
