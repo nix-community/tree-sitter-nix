@@ -18,3 +18,8 @@ includes = [
     "*.ts",
 ]
 excludes = ["src/**.json"]
+
+[formatter.rust]
+command = "rustfmt"
+options = ["--edition", "2018"]
+includes = ["*.rs"]

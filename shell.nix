@@ -15,5 +15,6 @@
     pkgs.treefmt
     pkgs.nixpkgs-fmt
     pkgs.nodePackages.prettier
+    pkgs.rustfmt
   ];
 })
