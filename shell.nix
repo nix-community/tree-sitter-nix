@@ -7,5 +7,8 @@
 
     pkgs.tree-sitter
     pkgs.editorconfig-checker
+
+    pkgs.rustc
+    pkgs.cargo
   ];
 })

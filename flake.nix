@@ -3,18 +3,26 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     flake-utils.url = "github:numtide/flake-utils";
+
     npmlock2nix = {
       url = "github:nix-community/npmlock2nix";
       flake = false;
     };
+
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils, npmlock2nix }: (
+  outputs = { self, nixpkgs, flake-utils, npmlock2nix, crane }: (
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         npmlock2nix' = pkgs.callPackage npmlock2nix { };
+        craneLib = crane.lib.${system};
 
       in
       {
@@ -57,6 +65,10 @@
             installPhase = ''
               touch $out
             '';
+          };
+
+          rust-bindings = craneLib.buildPackage {
+            src = self;
           };
         };
 
