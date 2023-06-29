@@ -28,55 +28,62 @@
 
       in
       {
-        checks = {
-          editorconfig = pkgs.runCommand "editorconfig"
-            {
-              nativeBuildInputs = [ pkgs.editorconfig-checker ];
-            } ''
-            cd ${self}
-            editorconfig-checker
-            touch $out
-          '';
+        checks =
+          let
+            # shellPackages = (pkgs.callPackage ./shell.nix { }).packages;
 
-          # If the generated code differs from the checked in we need
-          # to check in the newly generated sources.
-          generated-diff = pkgs.runCommand "generated-diff"
-            {
-              nativeBuildInputs = [ pkgs.tree-sitter pkgs.nodejs ];
-            } ''
-            cp -rv ${self} src
-            chmod +w -R src
-            cd src
+            # If the generated code differs from the checked in we need
+            # to check in the newly generated sources.
+            mkCheck = name: check: pkgs.runCommand name
+              {
+                inherit (self.devShells.${system}.default) nativeBuildInputs;
+              } ''
+              cp -rv ${self} src
+              chmod +w -R src
+              cd src
 
-            HOME=. npm run generate
-            diff -r src/ ${self}/src
+              ${check}
 
-            touch $out
-          '';
-
-          build = self.packages.${system}.tree-sitter-nix;
-
-          rust-bindings = craneLib.buildPackage {
-            src = self;
-          };
-        } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
-          # Requires xcode
-          node-bindings = npmlock2nix'.v2.build {
-            src = self;
-            inherit (self.devShells.${system}.default) nativeBuildInputs;
-            inherit (pkgs) nodejs;
-
-            buildCommands = [
-              "${pkgs.nodePackages.node-gyp}/bin/node-gyp configure"
-              "npm run build"
-            ];
-
-            installPhase = ''
               touch $out
             '';
-          };
 
-        };
+          in
+          {
+            build = self.packages.${system}.tree-sitter-nix;
+
+            editorconfig = mkCheck "editorconfig" "editorconfig-checker";
+
+            # If the generated code differs from the checked in we need
+            # to check in the newly generated sources.
+            generated-diff = mkCheck "generated-diff" ''
+              HOME=. npm run generate
+              diff -r src/ ${self}/src
+            '';
+
+            treefmt = mkCheck "treefmt" "treefmt --no-cache --fail-on-change";
+
+            rust-bindings = craneLib.buildPackage {
+              src = self;
+            };
+
+          } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+            # Requires xcode
+            node-bindings = npmlock2nix'.v2.build {
+              src = self;
+              inherit (self.devShells.${system}.default) nativeBuildInputs;
+              inherit (pkgs) nodejs;
+
+              buildCommands = [
+                "${pkgs.nodePackages.node-gyp}/bin/node-gyp configure"
+                "npm run build"
+              ];
+
+              installPhase = ''
+                touch $out
+              '';
+            };
+
+          };
 
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
         packages.default = self.packages.${system}.tree-sitter-nix;
