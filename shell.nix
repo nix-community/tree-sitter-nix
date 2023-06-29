@@ -14,5 +14,6 @@
     # Formatters
     pkgs.treefmt
     pkgs.nixpkgs-fmt
+    pkgs.nodePackages.prettier
   ];
 })

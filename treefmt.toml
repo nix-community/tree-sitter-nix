@@ -2,3 +2,19 @@
 command = "nixpkgs-fmt"
 includes = ["*.nix"]
 excludes = ["test/**.nix"]
+
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = [
+    "*.css",
+    "*.html",
+    "*.js",
+    "*.json",
+    "*.jsx",
+    "*.md",
+    "*.mdx",
+    "*.scss",
+    "*.ts",
+]
+excludes = ["src/**.json"]
