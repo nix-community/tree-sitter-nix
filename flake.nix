@@ -29,9 +29,10 @@
       in
       {
         checks = {
-          editorconfig = pkgs.runCommand "editorconfig" {
-            nativeBuildInputs = [ pkgs.editorconfig-checker ];
-          } ''
+          editorconfig = pkgs.runCommand "editorconfig"
+            {
+              nativeBuildInputs = [ pkgs.editorconfig-checker ];
+            } ''
             cd ${self}
             editorconfig-checker
             touch $out
@@ -39,9 +40,10 @@
 
           # If the generated code differs from the checked in we need
           # to check in the newly generated sources.
-          generated-diff = pkgs.runCommand "generated-diff" {
-            nativeBuildInputs = [ pkgs.tree-sitter pkgs.nodejs ];
-          } ''
+          generated-diff = pkgs.runCommand "generated-diff"
+            {
+              nativeBuildInputs = [ pkgs.tree-sitter pkgs.nodejs ];
+            } ''
             cp -rv ${self} src
             chmod +w -R src
             cd src
