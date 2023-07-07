@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> { } }:
 
-(pkgs.callPackage ./. { src = null; }).overrideAttrs(old: {
-  nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
+pkgs.mkShell {
+  packages = [
     pkgs.nodejs
     pkgs.python3
 
@@ -10,5 +10,12 @@
 
     pkgs.rustc
     pkgs.cargo
+
+    # Formatters
+    pkgs.treefmt
+    pkgs.nixpkgs-fmt
+    pkgs.nodePackages.prettier
+    pkgs.rustfmt
+    pkgs.clang-tools
   ];
-})
+}
