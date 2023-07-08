@@ -75,6 +75,26 @@
         "type": "github"
       }
     },
+    "nix-github-actions": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1688799431,
+        "narHash": "sha256-x5pm6bOb1/0IhWfqtAiJV/G8F+V/rNApcLgzfuOiam8=",
+        "owner": "nix-community",
+        "repo": "nix-github-actions",
+        "rev": "a6a47baf9ca39a942ae5c993a15a7c5c5076274c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-github-actions",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1687807295,
@@ -111,6 +131,7 @@
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils_2",
+        "nix-github-actions": "nix-github-actions",
         "nixpkgs": "nixpkgs",
         "npmlock2nix": "npmlock2nix"
       }
