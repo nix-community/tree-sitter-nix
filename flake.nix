@@ -15,9 +15,12 @@
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-github-actions.url = "github:nix-community/nix-github-actions";
+    nix-github-actions.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, npmlock2nix, crane }: (
+  outputs = { self, nixpkgs, flake-utils, npmlock2nix, crane, nix-github-actions }: (
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -88,6 +91,18 @@
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
         packages.default = self.packages.${system}.tree-sitter-nix;
         devShells.default = pkgs.callPackage ./shell.nix { };
-      }))
+      })) // {
+
+      githubActions = nix-github-actions.lib.mkGithubMatrix {
+        # Inherit GHA actions matrix from a subset of platforms supported by hosted runners
+        checks = {
+          inherit (self.checks) x86_64-linux;
+
+          # Don't run linters on darwin as it's just scheduling overhead
+          x86_64-darwin = builtins.removeAttrs self.checks.x86_64-darwin [ "editorconfig" "generated-diff" "treefmt" ];
+        };
+      };
+
+    }
   );
 }
