@@ -1,14 +1,14 @@
 (comment) @comment
 
 [
-  "if" 
+  "if"
   "then"
   "else"
   "let"
   "inherit"
   "in"
   "rec"
-  "with" 
+  "with"
   "assert"
   "or"
 ] @keyword
@@ -22,26 +22,9 @@
  (#is-not? local))
 
 [
-  (string_expression)
-  (indented_string_expression)
-] @string
-
-[
-  (path_expression)
-  (hpath_expression)
-  (spath_expression)
-] @string.special.path
-
-(uri_expression) @string.special.uri
-
-[
   (integer_expression)
   (float_expression)
 ] @number
-
-(interpolation
-  "${" @punctuation.special
-  "}" @punctuation.special) @embedded
 
 (escape_sequence) @escape
 (dollar_escape) @escape
@@ -96,3 +79,21 @@
 ] @punctuation.bracket
 
 (identifier) @variable
+
+[
+  (string_expression)
+  (indented_string_expression)
+] @string
+
+[
+  (path_expression)
+  (hpath_expression)
+  (spath_expression)
+] @string.special.path
+
+(uri_expression) @string.special.uri
+
+(interpolation
+  "${" @punctuation.special
+  (_) @embedded
+  "}" @punctuation.special)
