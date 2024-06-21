@@ -37,3 +37,13 @@
   (#match? @_path "^text$")
   (#set! injection.language "bash")
   (#set! injection.combined))
+
+((binding
+  attrpath: (attrpath (identifier) @_path)
+    expression: [
+      (indented_string_expression (string_fragment) @injection.content)
+      (function_expression body: (indented_string_expression (string_fragment) @injection.content))
+    ])
+  (#eq? @_path "testScript")
+  (#set! injection.language "python")
+  (#set! injection.combined))
