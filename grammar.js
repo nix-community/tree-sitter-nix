@@ -61,9 +61,9 @@ module.exports = grammar({
         repeat(
           choice(
             $.path_fragment,
-            alias($._immediate_interpolation, $.interpolation)
-          )
-        )
+            alias($._immediate_interpolation, $.interpolation),
+          ),
+        ),
       ),
 
     _hpath_start: ($) => /\~\/[a-zA-Z0-9\._\-\+\/]+/,
@@ -73,9 +73,9 @@ module.exports = grammar({
         repeat(
           choice(
             $.path_fragment,
-            alias($._immediate_interpolation, $.interpolation)
-          )
-        )
+            alias($._immediate_interpolation, $.interpolation),
+          ),
+        ),
       ),
 
     spath_expression: ($) => /<[a-zA-Z0-9\._\-\+]+(\/[a-zA-Z0-9\._\-\+]+)*>/,
@@ -88,7 +88,7 @@ module.exports = grammar({
         $.assert_expression,
         $.with_expression,
         $.let_expression,
-        $._expr_if
+        $._expr_if,
       ),
 
     function_expression: ($) =>
@@ -96,27 +96,27 @@ module.exports = grammar({
         seq(
           field("universal", $.identifier),
           ":",
-          field("body", $._expr_function_expression)
+          field("body", $._expr_function_expression),
         ),
         seq(
           field("formals", $.formals),
           ":",
-          field("body", $._expr_function_expression)
+          field("body", $._expr_function_expression),
         ),
         seq(
           field("formals", $.formals),
           "@",
           field("universal", $.identifier),
           ":",
-          field("body", $._expr_function_expression)
+          field("body", $._expr_function_expression),
         ),
         seq(
           field("universal", $.identifier),
           "@",
           field("formals", $.formals),
           ":",
-          field("body", $._expr_function_expression)
-        )
+          field("body", $._expr_function_expression),
+        ),
       ),
 
     formals: ($) =>
@@ -128,14 +128,14 @@ module.exports = grammar({
           commaSep1(field("formal", $.formal)),
           ",",
           field("ellipses", $.ellipses),
-          "}"
+          "}",
         ),
-        seq("{", field("ellipses", $.ellipses), "}")
+        seq("{", field("ellipses", $.ellipses), "}"),
       ),
     formal: ($) =>
       seq(
         field("name", $.identifier),
-        optional(seq("?", field("default", $._expression)))
+        optional(seq("?", field("default", $._expression))),
       ),
     ellipses: ($) => "...",
 
@@ -144,21 +144,21 @@ module.exports = grammar({
         "assert",
         field("condition", $._expression),
         ";",
-        field("body", $._expr_function_expression)
+        field("body", $._expr_function_expression),
       ),
     with_expression: ($) =>
       seq(
         "with",
         field("environment", $._expression),
         ";",
-        field("body", $._expr_function_expression)
+        field("body", $._expr_function_expression),
       ),
     let_expression: ($) =>
       seq(
         "let",
         optional($.binding_set),
         "in",
-        field("body", $._expr_function_expression)
+        field("body", $._expr_function_expression),
       ),
 
     _expr_if: ($) => choice($.if_expression, $._expr_op),
@@ -170,7 +170,7 @@ module.exports = grammar({
         "then",
         field("consequence", $._expression),
         "else",
-        field("alternative", $._expression)
+        field("alternative", $._expression),
       ),
 
     _expr_op: ($) =>
@@ -178,7 +178,7 @@ module.exports = grammar({
         $.has_attr_expression,
         $.unary_expression,
         $.binary_expression,
-        $._expr_apply_expression
+        $._expr_apply_expression,
       ),
 
     // I choose to *not* have this among the binary operators because
@@ -193,8 +193,8 @@ module.exports = grammar({
         seq(
           field("expression", $._expr_op),
           field("operator", "?"),
-          field("attrpath", $.attrpath)
-        )
+          field("attrpath", $.attrpath),
+        ),
       ),
 
     unary_expression: ($) =>
@@ -205,9 +205,9 @@ module.exports = grammar({
         ].map(([operator, precedence]) =>
           prec(
             precedence,
-            seq(field("operator", operator), field("argument", $._expr_op))
-          )
-        )
+            seq(field("operator", operator), field("argument", $._expr_op)),
+          ),
+        ),
       ),
 
     binary_expression: ($) =>
@@ -232,9 +232,9 @@ module.exports = grammar({
             seq(
               field("left", $._expr_op),
               field("operator", operator),
-              field("right", $._expr_op)
-            )
-          )
+              field("right", $._expr_op),
+            ),
+          ),
         ),
         // right assoc.
         ...[
@@ -247,10 +247,10 @@ module.exports = grammar({
             seq(
               field("left", $._expr_op),
               field("operator", operator),
-              field("right", $._expr_op)
-            )
-          )
-        )
+              field("right", $._expr_op),
+            ),
+          ),
+        ),
       ),
 
     _expr_apply_expression: ($) =>
@@ -259,7 +259,7 @@ module.exports = grammar({
     apply_expression: ($) =>
       seq(
         field("function", $._expr_apply_expression),
-        field("argument", $._expr_select_expression)
+        field("argument", $._expr_select_expression),
       ),
 
     _expr_select_expression: ($) => choice($.select_expression, $._expr_simple),
@@ -269,15 +269,15 @@ module.exports = grammar({
         seq(
           field("expression", $._expr_simple),
           ".",
-          field("attrpath", $.attrpath)
+          field("attrpath", $.attrpath),
         ),
         seq(
           field("expression", $._expr_simple),
           ".",
           field("attrpath", $.attrpath),
           "or",
-          field("default", $._expr_select_expression)
-        )
+          field("default", $._expr_select_expression),
+        ),
       ),
 
     _expr_simple: ($) =>
@@ -295,7 +295,7 @@ module.exports = grammar({
         $.attrset_expression,
         $.let_attrset_expression,
         $.rec_attrset_expression,
-        $.list_expression
+        $.list_expression,
       ),
 
     parenthesized_expression: ($) =>
@@ -316,11 +316,11 @@ module.exports = grammar({
             $.interpolation,
             choice(
               $.escape_sequence,
-              seq($.dollar_escape, alias("$", $.string_fragment))
-            )
-          )
+              seq($.dollar_escape, alias("$", $.string_fragment)),
+            ),
+          ),
         ),
-        '"'
+        '"',
       ),
 
     escape_sequence: ($) => token.immediate(/\\([^$]|\s)/), // Can also escape newline.
@@ -336,12 +336,12 @@ module.exports = grammar({
               alias($._indented_escape_sequence, $.escape_sequence),
               seq(
                 alias($._indented_dollar_escape, $.dollar_escape),
-                alias("$", $.string_fragment)
-              )
-            )
-          )
+                alias("$", $.string_fragment),
+              ),
+            ),
+          ),
         ),
-        "''"
+        "''",
       ),
     _indented_escape_sequence: ($) => token.immediate(/'''|''\\([^$]|\s)/), // Can also escape newline.
 
@@ -352,7 +352,7 @@ module.exports = grammar({
         field("attrpath", $.attrpath),
         "=",
         field("expression", $._expression),
-        ";"
+        ";",
       ),
     inherit: ($) => seq("inherit", field("attrs", $.inherited_attrs), ";"),
     inherit_from: ($) =>
@@ -362,24 +362,24 @@ module.exports = grammar({
         field("expression", $._expression),
         ")",
         field("attrs", $.inherited_attrs),
-        ";"
+        ";",
       ),
 
     attrpath: ($) =>
       sep1(
         field(
           "attr",
-          choice($.identifier, $.string_expression, $.interpolation)
+          choice($.identifier, $.string_expression, $.interpolation),
         ),
-        "."
+        ".",
       ),
 
     inherited_attrs: ($) =>
       repeat1(
         field(
           "attr",
-          choice($.identifier, $.string_expression, $.interpolation)
-        )
+          choice($.identifier, $.string_expression, $.interpolation),
+        ),
       ),
 
     _immediate_interpolation: ($) =>
