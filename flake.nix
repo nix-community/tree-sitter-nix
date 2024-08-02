@@ -3,15 +3,22 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    flake-utils.url = "github:numtide/flake-utils";
-
     nix-github-actions.url = "github:nix-community/nix-github-actions";
     nix-github-actions.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, nix-github-actions }: (
-    (flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, nix-github-actions }:
+    let
+      inherit (nixpkgs) lib;
+      forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+
+      # Reshape x86_64-linux.checks.foo -> checks.x86_64-linux.foo
+      # This removes the need for flake-utils.
+      reshape = s: builtins.foldl' (acc: system: lib.mapAttrs (n: v: { ${system} = v; }) s.${system}) { } (lib.attrNames s);
+      gen = fn: reshape (forAllSystems fn);
+
+    in
+    (gen (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs) lib;
@@ -112,5 +119,5 @@
       };
 
     }
-  );
+  ;
 }
