@@ -6,22 +6,15 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    npmlock2nix = {
-      url = "github:nix-community/npmlock2nix";
-      flake = false;
-    };
-
     nix-github-actions.url = "github:nix-community/nix-github-actions";
     nix-github-actions.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, npmlock2nix, nix-github-actions }: (
+  outputs = { self, nixpkgs, flake-utils, nix-github-actions }: (
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs) lib;
-
-        npmlock2nix' = pkgs.callPackage npmlock2nix { };
 
       in
       {
@@ -74,21 +67,33 @@
 
           } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
             # Requires xcode
-            node-bindings = npmlock2nix'.v2.build {
-              src = self;
-              inherit (self.devShells.${system}.default) nativeBuildInputs;
-              inherit (pkgs) nodejs;
-
-              buildCommands = [
-                "${pkgs.nodePackages.node-gyp}/bin/node-gyp configure"
-                "npm run build"
-              ];
-
-              installPhase = ''
-                touch $out
-              '';
-            };
-
+            node-bindings =
+              let
+                package' = lib.importJSON ./package.json;
+              in
+              pkgs.stdenv.mkDerivation {
+                pname = package'.name;
+                inherit (package') version;
+                src = self;
+                nativeBuildInputs = with pkgs; [
+                  importNpmLock.hooks.npmConfigHook
+                  nodejs
+                  nodejs.passthru.python # for node-gyp
+                  npmHooks.npmBuildHook
+                  npmHooks.npmInstallHook
+                  tree-sitter
+                ];
+                npmDeps = pkgs.importNpmLock {
+                  npmRoot = ./.;
+                };
+                buildPhase = ''
+                  runHook preBuild
+                  ${pkgs.nodePackages.node-gyp}/bin/node-gyp configure
+                  npm run build
+                  runHook postBuild
+                '';
+                installPhase = "touch $out";
+              };
           };
 
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
