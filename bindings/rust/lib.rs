@@ -6,7 +6,7 @@
 //! ```
 //! let code = "";
 //! let mut parser = tree_sitter::Parser::new();
-//! parser.set_language(tree_sitter_nix::language()).expect("Error loading nix grammar");
+//! parser.set_language(&tree_sitter_nix::language()).expect("Error loading nix grammar");
 //! let tree = parser.parse(code, None).unwrap();
 //! ```
 //!
@@ -46,7 +46,7 @@ mod tests {
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
         parser
-            .set_language(super::language())
+            .set_language(&super::language())
             .expect("Error loading nix language");
     }
 }
