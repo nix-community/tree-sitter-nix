@@ -11,23 +11,17 @@
       flake = false;
     };
 
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-github-actions.url = "github:nix-community/nix-github-actions";
     nix-github-actions.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, npmlock2nix, crane, nix-github-actions }: (
+  outputs = { self, nixpkgs, flake-utils, npmlock2nix, nix-github-actions }: (
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs) lib;
 
         npmlock2nix' = pkgs.callPackage npmlock2nix { };
-        craneLib = crane.lib.${system};
 
       in
       {
@@ -65,9 +59,18 @@
 
             treefmt = mkCheck "treefmt" "treefmt --no-cache --fail-on-change";
 
-            rust-bindings = craneLib.buildPackage {
-              src = self;
-            };
+            rust-bindings =
+              let
+                cargo' = lib.importTOML ./Cargo.toml;
+              in
+              pkgs.rustPlatform.buildRustPackage {
+                pname = cargo'.package.name;
+                inherit (cargo'.package) version;
+                src = self;
+                cargoLock = {
+                  lockFile = ./Cargo.lock;
+                };
+              };
 
           } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
             # Requires xcode
