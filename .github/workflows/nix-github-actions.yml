@@ -35,3 +35,10 @@ jobs:
           name: nix-community
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build -L ".#${{ matrix.attr }}"
+
+  collect:
+    runs-on: ubuntu-latest
+    needs:
+      - nix-build
+    steps:
+      - run: true
