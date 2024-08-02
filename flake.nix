@@ -106,6 +106,11 @@
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
         packages.default = self.packages.${system}.tree-sitter-nix;
         devShells.default = pkgs.callPackage ./shell.nix { };
+
+        formatter = pkgs.writeShellScriptBin "tree-sitter-nix-fmt" ''
+          exec ${pkgs.treefmt}/bin/treefmt --config-file ${./treefmt.toml} "$@"
+        '';
+
       })) // {
 
       githubActions = nix-github-actions.lib.mkGithubMatrix {
