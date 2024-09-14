@@ -15,6 +15,7 @@ const PREC = {
   "*": 9,
   "/": 9,
   concat: 10,
+  pipe: 10,
   "?": 11,
   negate: 12,
 };
@@ -222,6 +223,7 @@ module.exports = grammar({
           [">=", PREC.geq],
           ["&&", PREC.and],
           ["||", PREC.or],
+          ["|>", PREC.pipe],
           ["+", PREC["+"]],
           ["-", PREC["-"]],
           ["*", PREC["*"]],
