@@ -92,4 +92,5 @@ version = "0.0.1"
 dependencies = [
  "cc",
  "tree-sitter",
+ "tree-sitter-language",
 ]
