@@ -13,9 +13,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.1.26"
+version = "1.1.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4cbd4ab9fef358caa9c599eae3105af638ead5fb47a718315d8e03c852b9f0d"
+checksum = "677207f6eaec43fcfd092a718c847fc38aa261d0e19b8ef6797e0ccbe789e738"
 dependencies = [
  "shlex",
 ]
