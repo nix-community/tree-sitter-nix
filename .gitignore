@@ -1,2 +1,10 @@
+### direnv ###
+.direnv
+
+### nix ###
+result*
+repl-result-*
+
+### tree-sitter ###
 build
 node_modules

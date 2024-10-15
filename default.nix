@@ -1,19 +1,23 @@
-{ pkgs ? import <nixpkgs> { }
-, lib ? pkgs.lib
-, src ? lib.cleanSource ./.
-}:
+{system ? builtins.currentSystem}: let
+  lock = builtins.fromJSON (builtins.readFile ./flake.lock);
 
-pkgs.tree-sitter-grammars.tree-sitter-nix.overrideAttrs (old: {
-  name = "tree-sitter-nix-dev";
-  version = "dev";
-  inherit src;
+  root = lock.nodes.${lock.root};
+  inherit
+    (lock.nodes.${root.inputs.flake-compat}.locked)
+    owner
+    repo
+    rev
+    narHash
+    ;
 
-  doCheck = true;
-  checkInputs = [
-    pkgs.tree-sitter
-    pkgs.nodejs
-  ];
-  checkPhase = ''
-    HOME=$(mktemp -d) tree-sitter test
-  '';
-})
+  flake-compat = fetchTarball {
+    url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
+    sha256 = narHash;
+  };
+
+  flake = import flake-compat {
+    inherit system;
+    src = ./.;
+  };
+in
+  flake.defaultNix
