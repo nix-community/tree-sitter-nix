@@ -56,11 +56,31 @@
           # If the generated code differs from the checked in we need
           # to check in the newly generated sources.
           generated-diff = mkCheck "generated-diff" ''
-            HOME=. npm run generate
+            tree-sitter generate grammar.js
             diff -r src/ ${self}/src
           '';
 
           treefmt = treefmtEval.config.build.check self;
+
+          go-bindings = pkgs.buildGoModule {
+            pname = "tree-sitter-nix-go";
+            version = "0.0.6";
+
+            src = self;
+
+            ldflags = ["-s" "-w"];
+
+            vendorHash = "sha256-YZpqvrUQqNfU6ChEEExQipYUUPkqhDoF+iS1t1nUcPY=";
+            proxyVendor = true;
+
+            subPackages = ["bindings/go"];
+
+            nativeBuildInputs = [
+              pkgs.gcc
+              pkgs.pkg-config
+            ];
+            buildInputs = [pkgs.tree-sitter];
+          };
 
           rust-bindings = let
             cargo' = lib.importTOML ./Cargo.toml;
