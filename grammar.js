@@ -206,7 +206,7 @@ module.exports = grammar({
           prec(
             precedence,
             seq(field("operator", operator), field("argument", $._expr_op)),
-          ),
+          )
         ),
       ),
 
@@ -234,7 +234,7 @@ module.exports = grammar({
               field("operator", operator),
               field("right", $._expr_op),
             ),
-          ),
+          )
         ),
         // right assoc.
         ...[
@@ -249,7 +249,7 @@ module.exports = grammar({
               field("operator", operator),
               field("right", $._expr_op),
             ),
-          ),
+          )
         ),
       ),
 
