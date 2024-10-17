@@ -18,6 +18,9 @@
     deadnix.enable = true;
     statix.enable = true;
 
+    # swift
+    swift-format.enable = true;
+
     # rust
     rustfmt = {
       enable = true;
@@ -36,6 +39,8 @@
       excludes = [
         "bindings/node/binding.cc"
         "src/parser.c"
+        "src/tree_sitter/alloc.h"
+        "src/tree_sitter/array.h"
         "src/tree_sitter/parser.h"
       ];
     };

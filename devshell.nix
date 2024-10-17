@@ -1,20 +1,16 @@
 {pkgs, ...}:
 pkgs.mkShell {
-  packages = [
-    pkgs.nodejs
-    pkgs.python3
+  packages = with pkgs; [
+    nodejs
+    python3
 
-    pkgs.tree-sitter
-    pkgs.editorconfig-checker
+    tree-sitter
+    editorconfig-checker
 
-    pkgs.rustc
-    pkgs.cargo
+    rustc
+    cargo
 
-    # Formatters
-    pkgs.treefmt
-    pkgs.nixpkgs-fmt
-    pkgs.nodePackages.prettier
-    pkgs.rustfmt
-    pkgs.clang-tools
+    go
+    gcc
   ];
 }
