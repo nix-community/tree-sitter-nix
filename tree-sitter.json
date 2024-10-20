@@ -1,0 +1,44 @@
+{
+  "grammars": [
+    {
+      "name": "nix",
+      "camelcase": "NIX",
+      "scope": "source.json",
+      "path": ".",
+      "file-types": [
+        "nix"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm",
+      "locals": "queries/locals.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.6",
+    "license": "MIT",
+    "description": "Nix grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Charles Strahan",
+        "email": "maxbrunsfeld@gmail.com"
+      },
+      {
+        "name": "Aldo Borrero",
+        "email": "aldoborrero@pm.com"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/nix-community/tree-sitter-nix"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "java": false,
+    "kotlin": false,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
