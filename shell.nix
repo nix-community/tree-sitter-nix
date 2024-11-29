@@ -1,21 +1,23 @@
-{ pkgs ? import <nixpkgs> { } }:
+{system ? builtins.currentSystem}: let
+  lock = builtins.fromJSON (builtins.readFile ./flake.lock);
 
-pkgs.mkShell {
-  packages = [
-    pkgs.nodejs
-    pkgs.python3
+  root = lock.nodes.${lock.root};
+  inherit
+    (lock.nodes.${root.inputs.flake-compat}.locked)
+    owner
+    repo
+    rev
+    narHash
+    ;
 
-    pkgs.tree-sitter
-    pkgs.editorconfig-checker
+  flake-compat = fetchTarball {
+    url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
+    sha256 = narHash;
+  };
 
-    pkgs.rustc
-    pkgs.cargo
-
-    # Formatters
-    pkgs.treefmt
-    pkgs.nixpkgs-fmt
-    pkgs.nodePackages.prettier
-    pkgs.rustfmt
-    pkgs.clang-tools
-  ];
-}
+  flake = import flake-compat {
+    inherit system;
+    src = ./.;
+  };
+in
+  flake.shellNix
