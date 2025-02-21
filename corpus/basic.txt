@@ -209,7 +209,23 @@ a: b
 (source_code (function_expression (identifier) (variable_expression (identifier))))
 
 ====================
-function_expression (with_expression formals)
+function_expression (with_expression formals and trailing comma)
+====================
+
+{ a, b, c, }: 1.234
+
+---
+
+(source_code
+    (function_expression
+        (formals
+            (formal (identifier))
+            (formal (identifier))
+            (formal (identifier)))
+        (float_expression)))
+
+====================
+function_expression (with_expression formals and ellipses)
 ====================
 
 a@{ /*1*/ b, /*2*/ c ? 123, /*3*/ ... }: 1.234
