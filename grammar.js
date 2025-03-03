@@ -1,4 +1,6 @@
 const PREC = {
+  pipe_forward: 0,
+  pipe_backward: 0,
   impl: 1,
   or: 2,
   and: 3,
@@ -215,6 +217,7 @@ module.exports = grammar({
       choice(
         // left assoc.
         ...[
+          ["|>", PREC.pipe_forward],
           ["==", PREC.eq],
           ["!=", PREC.neq],
           ["<", PREC["<"]],
@@ -223,7 +226,6 @@ module.exports = grammar({
           [">=", PREC.geq],
           ["&&", PREC.and],
           ["||", PREC.or],
-          ["|>", PREC.pipe],
           ["+", PREC["+"]],
           ["-", PREC["-"]],
           ["*", PREC["*"]],
@@ -240,6 +242,7 @@ module.exports = grammar({
         ),
         // right assoc.
         ...[
+          ["<|", PREC.pipe_backward],
           ["->", PREC.impl],
           ["//", PREC.update],
           ["++", PREC.concat],

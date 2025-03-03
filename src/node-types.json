@@ -535,6 +535,10 @@
             "named": false
           },
           {
+            "type": "<|",
+            "named": false
+          },
+          {
             "type": "==",
             "named": false
           },
@@ -1544,6 +1548,7 @@
   {
     "type": "source_code",
     "named": true,
+    "root": true,
     "fields": {
       "expression": {
         "multiple": false,
@@ -1902,6 +1907,10 @@
   },
   {
     "type": "<=",
+    "named": false
+  },
+  {
+    "type": "<|",
     "named": false
   },
   {
