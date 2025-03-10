@@ -126,8 +126,7 @@ module.exports = grammar({
         seq(
           "{",
           commaSep1(field("formal", $.formal)),
-          ",",
-          field("ellipses", $.ellipses),
+          optional(seq(",", optional(field("ellipses", $.ellipses)))),
           "}",
         ),
         seq("{", field("ellipses", $.ellipses), "}"),
