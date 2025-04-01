@@ -8,6 +8,7 @@
       "scope": "source.nix",
       "file-types": ["nix"],
       "injection-regex": "^nix$",
+      "tags": "queries/tags.scm",
       "class-name": "TreeSitterNix"
     }
   ],
