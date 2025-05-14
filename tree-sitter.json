@@ -1,0 +1,39 @@
+{
+  "grammars": [
+    {
+      "name": "nix",
+      "camelcase": "Nix",
+      "scope": "source.nix",
+      "path": ".",
+      "file-types": [
+        "nix"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm",
+      "locals": "queries/locals.scm",
+      "injection-regex": "nix"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.2",
+    "license": "MIT",
+    "description": "Nix grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Charles Strahan",
+        "email": "charles@cstrahan.com"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/nix-community/tree-sitter-nix"
+    }
+  },
+  "bindings": {
+    "c": false,
+    "go": false,
+    "node": true,
+    "python": false,
+    "rust": true,
+    "swift": false
+  }
+}
