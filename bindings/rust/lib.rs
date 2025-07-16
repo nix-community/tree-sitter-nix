@@ -46,8 +46,8 @@ pub const NODE_TYPES: &'static str = include_str!("../../src/node-types.json");
 /// The syntax highlighting query for this language.
 pub const HIGHLIGHTS_QUERY: &'static str = include_str!("../../queries/highlights.scm");
 
-// The injections query for this language.
-// pub const INJECTIONS_QUERY: &'static str = include_str!("../../queries/injections.scm");
+/// The injections query for this language.
+pub const INJECTIONS_QUERY: &'static str = include_str!("../../queries/injections.scm");
 
 // The locals tagging query for this language.
 // pub const LOCALS_QUERY: &'static str = include_str!("../../queries/locals.scm");
