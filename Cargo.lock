@@ -88,7 +88,7 @@ checksum = "2ca9cabf8f61ee3e83c0f532c45e9e082627f77a8bb9553684df584edcf82654"
 
 [[package]]
 name = "tree-sitter-nix"
-version = "0.0.2"
+version = "0.3.0"
 dependencies = [
  "cc",
  "tree-sitter",
