@@ -32,4 +32,6 @@ excludes = [
   "bindings/node/binding.cc",
   "src/parser.c",
   "src/tree_sitter/parser.h",
+  "src/tree_sitter/alloc.h",
+  "src/tree_sitter/array.h",
 ]
