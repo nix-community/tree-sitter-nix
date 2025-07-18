@@ -17,5 +17,5 @@ indent_style = space
 indent_size = 2
 
 # tree-sitter generate emits json with no trailing newline
-[src/node-types.json]
+[src/{node-types,grammar}.json]
 insert_final_newline = false
