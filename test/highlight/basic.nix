@@ -49,7 +49,7 @@
       #      ^ string
       #       ^ punctuation.special
       #          ^ variable
-      #              ^ punctuation.bracket
+      #              ^ punctuation.special
       #               ^ string
       #                   ^ variable
       #                          ^ string
