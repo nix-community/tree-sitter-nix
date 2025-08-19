@@ -23,20 +23,5 @@
   "dependencies": {
     "nan": "^2.17.0"
   },
-  "devDependencies": {},
-  "tree-sitter": [
-    {
-      "file-types": [
-        "nix"
-      ],
-      "highlights": [
-        "queries/highlights.scm"
-      ],
-      "injection-regex": "^(nix)$",
-      "locals": [
-        "queries/locals.scm"
-      ],
-      "scope": "source.nix"
-    }
-  ]
+  "devDependencies": {}
 }
