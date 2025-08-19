@@ -108,6 +108,12 @@
 
       githubActions = nix-github-actions.lib.mkGithubMatrix {
         # Inherit GHA actions matrix from a subset of platforms supported by hosted runners
+        platforms = {
+          "x86_64-linux" = "nscloud-ubuntu-22.04-amd64-4x16";
+          "x86_64-darwin" = "macos-13";
+          "aarch64-darwin" = "macos-latest";
+          "aarch64-linux" = "nscloud-ubuntu-22.04-arm64-4x16";
+        };
         checks = {
           inherit (self.checks) x86_64-linux;
 
