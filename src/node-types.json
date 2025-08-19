@@ -535,6 +535,10 @@
             "named": false
           },
           {
+            "type": "<|",
+            "named": false
+          },
+          {
             "type": "==",
             "named": false
           },
@@ -544,6 +548,10 @@
           },
           {
             "type": ">=",
+            "named": false
+          },
+          {
+            "type": "|>",
             "named": false
           },
           {
@@ -1540,6 +1548,7 @@
   {
     "type": "source_code",
     "named": true,
+    "root": true,
     "fields": {
       "expression": {
         "multiple": false,
@@ -1901,6 +1910,10 @@
     "named": false
   },
   {
+    "type": "<|",
+    "named": false
+  },
+  {
     "type": "=",
     "named": false
   },
@@ -1938,7 +1951,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "dollar_escape",
@@ -2018,6 +2032,10 @@
   },
   {
     "type": "{",
+    "named": false
+  },
+  {
+    "type": "|>",
     "named": false
   },
   {

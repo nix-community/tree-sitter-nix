@@ -1,4 +1,5 @@
 {
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "nix",
   "word": "keyword",
   "rules": {
@@ -747,6 +748,39 @@
       "members": [
         {
           "type": "PREC_LEFT",
+          "value": 0,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr_op"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "STRING",
+                  "value": "|>"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr_op"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
           "value": 4,
           "content": {
             "type": "SEQ",
@@ -1128,6 +1162,39 @@
                 "content": {
                   "type": "STRING",
                   "value": "/"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr_op"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_RIGHT",
+          "value": 0,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr_op"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "STRING",
+                  "value": "<|"
                 }
               },
               {
@@ -2005,6 +2072,6 @@
   "inline": [],
   "supertypes": [
     "_expression"
-  ]
+  ],
+  "reserved": {}
 }
-
