@@ -18,6 +18,27 @@
  (#set! injection.language "bash")
  (#set! injection.combined))
 
+((apply_expression
+   function: (apply_expression function: (_) @_func)
+   argument: (indented_string_expression (string_fragment) @injection.content))
+ (#match? @_func "(^|\\.)writeUiuaScript$")
+ (#set! injection.language "uiua")
+ (#set! injection.combined))
+
+((apply_expression
+   function: (apply_expression function: (_) @_func)
+   argument: (indented_string_expression (string_fragment) @injection.content))
+ (#match? @_func "(^|\\.)writeNushellScript$")
+ (#set! injection.language "nushell")
+ (#set! injection.combined))
+
+((apply_expression
+   function: (apply_expression function: (_) @_func)
+   argument: (indented_string_expression (string_fragment) @injection.content))
+ (#match? @_func "(^|\\.)writeJqScript$")
+ (#set! injection.language "jq")
+ (#set! injection.combined))
+
 (apply_expression
   (apply_expression
     function: (apply_expression
