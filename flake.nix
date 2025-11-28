@@ -96,7 +96,7 @@
               };
           };
 
-        packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
+        packages.tree-sitter-nix = pkgs.callPackage ./default.nix { };
         packages.default = self.packages.${system}.tree-sitter-nix;
         devShells.default = pkgs.callPackage ./shell.nix { };
 
