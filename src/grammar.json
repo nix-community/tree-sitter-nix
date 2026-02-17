@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "nix",
   "word": "keyword",
   "rules": {
@@ -2043,6 +2042,6 @@
   "inline": [],
   "supertypes": [
     "_expression"
-  ],
-  "reserved": {}
+  ]
 }
+

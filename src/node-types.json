@@ -1125,7 +1125,6 @@
   {
     "type": "injection_comment",
     "named": true,
-    "extra": true,
     "fields": {
       "language": {
         "multiple": false,
@@ -1557,7 +1556,6 @@
   {
     "type": "source_code",
     "named": true,
-    "root": true,
     "fields": {
       "expression": {
         "multiple": false,
@@ -1956,8 +1954,7 @@
   },
   {
     "type": "comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "dollar_escape",
