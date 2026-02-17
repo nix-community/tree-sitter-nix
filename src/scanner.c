@@ -319,12 +319,12 @@ bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   // Handle injection language (only valid immediately after prefix)
-  if (valid_symbols[INJECTION_LANGUAGE] &&
-      !valid_symbols[STRING_FRAGMENT]) {
+  if (valid_symbols[INJECTION_LANGUAGE] && !valid_symbols[STRING_FRAGMENT]) {
     return scan_injection_language(lexer);
   }
 
-  // Handle injection comment suffix (only valid after language in block comment)
+  // Handle injection comment suffix (only valid after language in block
+  // comment)
   if (valid_symbols[INJECTION_COMMENT_SUFFIX] &&
       !valid_symbols[STRING_FRAGMENT]) {
     return scan_injection_comment_suffix(lexer);
