@@ -6,7 +6,7 @@
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #endif
 
-#define LANGUAGE_VERSION 15
+#define LANGUAGE_VERSION 14
 #define STATE_COUNT 565
 #define LARGE_STATE_COUNT 2
 #define SYMBOL_COUNT 112
@@ -17,7 +17,7 @@
 #define MAX_ALIAS_SEQUENCE_LENGTH 6
 #define MAX_RESERVED_WORD_SET_SIZE 0
 #define PRODUCTION_ID_COUNT 42
-#define SUPERTYPE_COUNT 1
+#define SUPERTYPE_COUNT 0
 
 enum ts_symbol_identifiers {
   sym_keyword = 1,
@@ -1604,42 +1604,6 @@ static const TSStateId ts_primary_state_ids[STATE_COUNT] = {
   [564] = 564,
 };
 
-static const TSSymbol ts_supertype_symbols[SUPERTYPE_COUNT] = {
-  sym__expression,
-};
-
-static const TSMapSlice ts_supertype_map_slices[] = {
-  [sym__expression] = {.index = 0, .length = 24},
-};
-
-static const TSSymbol ts_supertype_map_entries[] = {
-  [0] =
-    sym_apply_expression,
-    sym_assert_expression,
-    sym_attrset_expression,
-    sym_binary_expression,
-    sym_float_expression,
-    sym_function_expression,
-    sym_has_attr_expression,
-    sym_hpath_expression,
-    sym_if_expression,
-    sym_indented_string_expression,
-    sym_integer_expression,
-    sym_let_attrset_expression,
-    sym_let_expression,
-    sym_list_expression,
-    sym_parenthesized_expression,
-    sym_path_expression,
-    sym_rec_attrset_expression,
-    sym_select_expression,
-    sym_spath_expression,
-    sym_string_expression,
-    sym_unary_expression,
-    sym_uri_expression,
-    sym_variable_expression,
-    sym_with_expression,
-};
-
 static bool ts_lex(TSLexer *lexer, TSStateId state) {
   START_LEXER();
   eof = lexer->eof(lexer);
@@ -3220,7 +3184,7 @@ static bool ts_lex_keywords(TSLexer *lexer, TSStateId state) {
   }
 }
 
-static const TSLexerMode ts_lex_modes[STATE_COUNT] = {
+static const TSLexMode ts_lex_modes[STATE_COUNT] = {
   [0] = {.lex_state = 0, .external_lex_state = 1},
   [1] = {.lex_state = 51, .external_lex_state = 2},
   [2] = {.lex_state = 51, .external_lex_state = 2},
@@ -26641,7 +26605,6 @@ TS_PUBLIC const TSLanguage *tree_sitter_nix(void) {
     .state_count = STATE_COUNT,
     .large_state_count = LARGE_STATE_COUNT,
     .production_id_count = PRODUCTION_ID_COUNT,
-    .supertype_count = SUPERTYPE_COUNT,
     .field_count = FIELD_COUNT,
     .max_alias_sequence_length = MAX_ALIAS_SEQUENCE_LENGTH,
     .parse_table = &ts_parse_table[0][0],
@@ -26652,9 +26615,6 @@ TS_PUBLIC const TSLanguage *tree_sitter_nix(void) {
     .field_names = ts_field_names,
     .field_map_slices = ts_field_map_slices,
     .field_map_entries = ts_field_map_entries,
-    .supertype_map_slices = ts_supertype_map_slices,
-    .supertype_map_entries = ts_supertype_map_entries,
-    .supertype_symbols = ts_supertype_symbols,
     .symbol_metadata = ts_symbol_metadata,
     .public_symbol_map = ts_symbol_map,
     .alias_map = ts_non_terminal_alias_map,
@@ -26673,13 +26633,6 @@ TS_PUBLIC const TSLanguage *tree_sitter_nix(void) {
       tree_sitter_nix_external_scanner_deserialize,
     },
     .primary_state_ids = ts_primary_state_ids,
-    .name = "nix",
-    .max_reserved_word_set_size = 0,
-    .metadata = {
-      .major_version = 0,
-      .minor_version = 3,
-      .patch_version = 0,
-    },
   };
   return &language;
 }
