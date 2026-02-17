@@ -1,4 +1,5 @@
 {
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "nix",
   "word": "keyword",
   "rules": {
@@ -1962,6 +1963,27 @@
           }
         ]
       }
+    },
+    "injection_comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_injection_comment_prefix"
+        },
+        {
+          "type": "FIELD",
+          "name": "language",
+          "content": {
+            "type": "SYMBOL",
+            "name": "injection_language"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_injection_comment_suffix"
+        }
+      ]
     }
   },
   "extras": [
@@ -1972,6 +1994,10 @@
     {
       "type": "SYMBOL",
       "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "injection_comment"
     }
   ],
   "conflicts": [],
@@ -2000,11 +2026,23 @@
     {
       "type": "SYMBOL",
       "name": "_indented_dollar_escape"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_injection_comment_prefix"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "injection_language"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_injection_comment_suffix"
     }
   ],
   "inline": [],
   "supertypes": [
     "_expression"
-  ]
+  ],
+  "reserved": {}
 }
-

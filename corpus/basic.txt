@@ -157,12 +157,15 @@ let
 
 (source_code
     (let_expression
-        (comment)
+        (injection_comment
+            (injection_language))
         (binding_set
             (binding (attrpath (identifier)) (variable_expression (identifier)))
-            (comment)
+            (injection_comment
+                (injection_language))
             (binding (attrpath (identifier)) (variable_expression (identifier))))
-        (comment)
+        (injection_comment
+            (injection_language))
         (variable_expression (identifier))))
 
 ====================
@@ -542,3 +545,118 @@ parens
 
 (source_code
     (parenthesized_expression (integer_expression)))
+
+====================
+injection comment (line)
+====================
+
+# bash
+''
+  echo "hello"
+''
+
+---
+
+(source_code
+    (injection_comment
+        (injection_language))
+    (indented_string_expression
+        (string_fragment)))
+
+====================
+injection comment (block)
+====================
+
+/* python */
+''
+  print("hello")
+''
+
+---
+
+(source_code
+    (injection_comment
+        (injection_language))
+    (indented_string_expression
+        (string_fragment)))
+
+====================
+regular comment (multi-word, not injection)
+====================
+
+# this is a comment
+''
+  hello
+''
+
+---
+
+(source_code
+    (comment)
+    (indented_string_expression
+        (string_fragment)))
+
+====================
+regular block comment (multi-word, not injection)
+====================
+
+/* this is a comment */
+''
+  hello
+''
+
+---
+
+(source_code
+    (comment)
+    (indented_string_expression
+        (string_fragment)))
+
+====================
+comment without space after hash (not injection)
+====================
+
+#nope
+"hello"
+
+---
+
+(source_code
+    (comment)
+    (string_expression (string_fragment)))
+
+====================
+comment with digit after hash space (not injection)
+====================
+
+# 123
+"hello"
+
+---
+
+(source_code
+    (comment)
+    (string_expression (string_fragment)))
+
+====================
+injection comment in binding context
+====================
+
+{
+  # bash
+  buildPhase = ''
+    make
+  '';
+}
+
+---
+
+(source_code
+    (attrset_expression
+        (injection_comment
+            (injection_language))
+        (binding_set
+            (binding
+                (attrpath (identifier))
+                (indented_string_expression
+                    (string_fragment))))))

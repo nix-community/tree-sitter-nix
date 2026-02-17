@@ -1123,6 +1123,23 @@
     }
   },
   {
+    "type": "injection_comment",
+    "named": true,
+    "extra": true,
+    "fields": {
+      "language": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "injection_language",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "interpolation",
     "named": true,
     "fields": {
@@ -1540,6 +1557,7 @@
   {
     "type": "source_code",
     "named": true,
+    "root": true,
     "fields": {
       "expression": {
         "multiple": false,
@@ -1938,7 +1956,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "dollar_escape",
@@ -1975,6 +1994,10 @@
   {
     "type": "inherit",
     "named": false
+  },
+  {
+    "type": "injection_language",
+    "named": true
   },
   {
     "type": "integer_expression",

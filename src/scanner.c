@@ -7,6 +7,9 @@ enum TokenType {
   PATH_FRAGMENT,
   DOLLAR_ESCAPE,
   INDENTED_DOLLAR_ESCAPE,
+  INJECTION_COMMENT_PREFIX,
+  INJECTION_LANGUAGE,
+  INJECTION_COMMENT_SUFFIX,
 };
 
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -171,6 +174,130 @@ static bool scan_path_fragment(TSLexer *lexer) {
   }
 }
 
+static bool is_language_char(int32_t c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+         (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '+';
+}
+
+// Scan the prefix of a line injection comment: "# "
+// or block injection comment: "/* "
+// Peeks ahead to verify this is a single-word comment before returning true.
+static bool scan_injection_comment_prefix(TSLexer *lexer) {
+  lexer->result_symbol = INJECTION_COMMENT_PREFIX;
+
+  if (lexer->lookahead == '#') {
+    advance(lexer);
+    // Must have at least one space after #
+    if (lexer->lookahead != ' ' && lexer->lookahead != '\t') {
+      return false;
+    }
+    // Consume spaces/tabs after #
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+      advance(lexer);
+    }
+    // Mark end here — the prefix is "# " (with trailing whitespace)
+    lexer->mark_end(lexer);
+
+    // Peek ahead: must start with a letter
+    if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+          (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z'))) {
+      return false;
+    }
+    // Read the word
+    while (is_language_char(lexer->lookahead)) {
+      advance(lexer);
+    }
+    // After the word, must be only whitespace until EOL or EOF
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+      advance(lexer);
+    }
+    if (lexer->lookahead != '\n' && lexer->lookahead != '\r' &&
+        lexer->lookahead != '\0') {
+      return false;
+    }
+    return true;
+  }
+
+  if (lexer->lookahead == '/') {
+    advance(lexer);
+    if (lexer->lookahead != '*') {
+      return false;
+    }
+    advance(lexer);
+    // Consume optional whitespace after /*
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+      advance(lexer);
+    }
+    // Mark end here — the prefix is "/* " (with trailing whitespace)
+    lexer->mark_end(lexer);
+
+    // Peek ahead: must start with a letter
+    if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+          (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z'))) {
+      return false;
+    }
+    // Read the word
+    while (is_language_char(lexer->lookahead)) {
+      advance(lexer);
+    }
+    // After the word, optional whitespace then must be */
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+      advance(lexer);
+    }
+    if (lexer->lookahead != '*') {
+      return false;
+    }
+    advance(lexer);
+    if (lexer->lookahead != '/') {
+      return false;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+// Scan the language word (e.g., "bash", "python").
+// Called after the prefix has been consumed.
+static bool scan_injection_language(TSLexer *lexer) {
+  lexer->result_symbol = INJECTION_LANGUAGE;
+
+  if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+        (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z'))) {
+    return false;
+  }
+
+  while (is_language_char(lexer->lookahead)) {
+    advance(lexer);
+  }
+  lexer->mark_end(lexer);
+  return true;
+}
+
+// Scan the suffix of an injection comment.
+// For block comments: consumes trailing whitespace + "*/"
+// For line comments: returns a zero-width token
+static bool scan_injection_comment_suffix(TSLexer *lexer) {
+  lexer->result_symbol = INJECTION_COMMENT_SUFFIX;
+  lexer->mark_end(lexer); // zero-width fallback position
+
+  // Try to consume whitespace + */
+  while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+    advance(lexer);
+  }
+  if (lexer->lookahead == '*') {
+    advance(lexer);
+    if (lexer->lookahead == '/') {
+      advance(lexer);
+      lexer->mark_end(lexer);
+      return true;
+    }
+    // No '/' after '*' — cursor resets to initial mark_end (zero-width)
+  }
+  // Line comment case: return zero-width token
+  return true;
+}
+
 void *tree_sitter_nix_external_scanner_create() { return NULL; }
 
 bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
@@ -184,9 +311,27 @@ bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
   if (valid_symbols[STRING_FRAGMENT] &&
       valid_symbols[INDENTED_STRING_FRAGMENT] && valid_symbols[PATH_START] &&
       valid_symbols[PATH_FRAGMENT] && valid_symbols[DOLLAR_ESCAPE] &&
-      valid_symbols[INDENTED_DOLLAR_ESCAPE]) {
+      valid_symbols[INDENTED_DOLLAR_ESCAPE] &&
+      valid_symbols[INJECTION_COMMENT_PREFIX] &&
+      valid_symbols[INJECTION_LANGUAGE] &&
+      valid_symbols[INJECTION_COMMENT_SUFFIX]) {
     return false;
-  } else if (valid_symbols[STRING_FRAGMENT]) {
+  }
+
+  // Handle injection language (only valid immediately after prefix)
+  if (valid_symbols[INJECTION_LANGUAGE] &&
+      !valid_symbols[STRING_FRAGMENT]) {
+    return scan_injection_language(lexer);
+  }
+
+  // Handle injection comment suffix (only valid after language in block comment)
+  if (valid_symbols[INJECTION_COMMENT_SUFFIX] &&
+      !valid_symbols[STRING_FRAGMENT]) {
+    return scan_injection_comment_suffix(lexer);
+  }
+
+  // String fragments — always handle first when inside a string.
+  if (valid_symbols[STRING_FRAGMENT]) {
     if (lexer->lookahead == '\\') {
       return scan_dollar_escape(lexer);
     }
@@ -200,7 +345,11 @@ bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
       }
     }
     return scan_indented_string_fragment(lexer);
-  } else if (valid_symbols[PATH_FRAGMENT] && is_path_char(lexer->lookahead)) {
+  }
+
+  // Path fragments must be immediate (no whitespace before). Check before
+  // skipping whitespace.
+  if (valid_symbols[PATH_FRAGMENT] && is_path_char(lexer->lookahead)) {
     // path_fragments should be scanned as immediate tokens, with no preceding
     // extras. so we assert that the very first token is a path character, and
     // otherwise we fall through to the case below. example:
@@ -219,7 +368,87 @@ bool tree_sitter_nix_external_scanner_scan(void *payload, TSLexer *lexer,
     // following function application:
     //   (a/b${c}) (d/e${f})
     return scan_path_fragment(lexer);
-  } else if (valid_symbols[PATH_START]) {
+  }
+
+  // Skip whitespace for remaining dispatch (path_start, injection comments).
+  while (lexer->lookahead == ' ' || lexer->lookahead == '\n' ||
+         lexer->lookahead == '\r' || lexer->lookahead == '\t') {
+    skip(lexer);
+  }
+
+  // '#' can only start a comment, never a path. Try injection first;
+  // if it fails tree-sitter resets the lexer and the internal `comment`
+  // token matches instead.
+  if (lexer->lookahead == '#') {
+    if (valid_symbols[INJECTION_COMMENT_PREFIX]) {
+      return scan_injection_comment_prefix(lexer);
+    }
+    return false;
+  }
+
+  // '/' could be: /* block comment, /path, or / division operator.
+  // Peek one character ahead to disambiguate.
+  if (lexer->lookahead == '/') {
+    advance(lexer);
+    if (lexer->lookahead == '*') {
+      // Block comment: /* ... */. Never a path.
+      // Try block injection; if it fails the internal `comment` token matches.
+      if (valid_symbols[INJECTION_COMMENT_PREFIX]) {
+        advance(lexer); // consume '*'
+        while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+          advance(lexer);
+        }
+        lexer->mark_end(lexer); // prefix ends after "/* "
+
+        // Peek ahead: must be a single word then */
+        if (!((lexer->lookahead >= 'a' && lexer->lookahead <= 'z') ||
+              (lexer->lookahead >= 'A' && lexer->lookahead <= 'Z'))) {
+          return false;
+        }
+        while (is_language_char(lexer->lookahead)) {
+          advance(lexer);
+        }
+        while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+          advance(lexer);
+        }
+        if (lexer->lookahead != '*') {
+          return false;
+        }
+        advance(lexer);
+        if (lexer->lookahead != '/') {
+          return false;
+        }
+        lexer->result_symbol = INJECTION_COMMENT_PREFIX;
+        return true;
+      }
+      return false;
+    }
+
+    // Not /* — could be /path or / operator. We already consumed '/'.
+    // Continue with inline path scanning (have_sep = true).
+    if (valid_symbols[PATH_START]) {
+      lexer->result_symbol = PATH_START;
+      bool have_after_sep = false;
+      while (true) {
+        lexer->mark_end(lexer);
+        int32_t c = lexer->lookahead;
+        if (c == '/') {
+          // additional separator
+        } else if (is_path_char(c)) {
+          have_after_sep = true;
+        } else if (c == '$') {
+          return true; // have separator (consumed above)
+        } else {
+          return have_after_sep;
+        }
+        advance(lexer);
+      }
+    }
+    return false;
+  }
+
+  // All other first characters — try path_start (whitespace already skipped).
+  if (valid_symbols[PATH_START]) {
     return scan_path_start(lexer);
   }
 
