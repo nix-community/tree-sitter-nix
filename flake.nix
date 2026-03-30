@@ -16,6 +16,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         inherit (pkgs) lib;
 
+        filenameInjections = import ./queries/filename-injections.nix { inherit pkgs lib; };
+
       in
       {
         checks =
@@ -48,6 +50,7 @@
             generated-diff = mkCheck "generated-diff" ''
               HOME=. npm run generate
               diff -r src/ ${self}/src
+              diff queries/ ${self}/queries
             '';
 
             treefmt = mkCheck "treefmt" "treefmt --no-cache --fail-on-change";
@@ -98,6 +101,7 @@
 
         packages.tree-sitter-nix = pkgs.callPackage ./default.nix { src = self; };
         packages.default = self.packages.${system}.tree-sitter-nix;
+        packages.generate-filename-injections = filenameInjections.generate;
         devShells.default = pkgs.callPackage ./shell.nix { };
 
         formatter = pkgs.writeShellScriptBin "tree-sitter-nix-fmt" ''
