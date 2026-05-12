@@ -88,7 +88,7 @@
                 };
                 buildPhase = ''
                   runHook preBuild
-                  ${pkgs.nodePackages.node-gyp}/bin/node-gyp configure
+                  ${pkgs.node-gyp}/bin/node-gyp configure
                   npm run build
                   runHook postBuild
                 '';
