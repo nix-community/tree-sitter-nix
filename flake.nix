@@ -88,8 +88,10 @@
                 };
                 buildPhase = ''
                   runHook preBuild
+                  # Generate parser using the Nix-provided tree-sitter
+                  tree-sitter generate --abi 15
                   ${pkgs.nodePackages.node-gyp}/bin/node-gyp configure
-                  npm run build
+                  ${pkgs.nodePackages.node-gyp}/bin/node-gyp build
                   runHook postBuild
                 '';
                 installPhase = "touch $out";

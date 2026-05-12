@@ -9,6 +9,7 @@
       "file-types": ["nix"],
       "injection-regex": "^nix$",
       "tags": "queries/tags.scm",
+      "highlights": "queries/highlights.scm",
       "class-name": "TreeSitterNix"
     }
   ],
