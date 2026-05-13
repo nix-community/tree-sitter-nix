@@ -1,4 +1,5 @@
 (comment) @comment
+(injection_comment) @comment
 
 [
   "if"
