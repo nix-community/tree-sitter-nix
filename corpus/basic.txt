@@ -533,6 +533,19 @@ square 2 + -pi - 42.0
         (float_expression)))
 
 ====================
+pipe operators
+====================
+
+(toString <| 1) |> fn
+
+---
+
+(source_code
+    (binary_expression
+        (parenthesized_expression (binary_expression (variable_expression (identifier)) (integer_expression)))
+        (variable_expression (identifier))))
+
+====================
 parens
 ====================
 
