@@ -353,7 +353,8 @@ module.exports = grammar({
         field("expression", $._expression),
         ";",
       ),
-    inherit: ($) => seq("inherit", field("attrs", $.inherited_attrs), ";"),
+    inherit: ($) =>
+      seq("inherit", optional(field("attrs", $.inherited_attrs)), ";"),
     inherit_from: ($) =>
       seq(
         "inherit",
