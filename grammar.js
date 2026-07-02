@@ -22,7 +22,7 @@ const PREC = {
 module.exports = grammar({
   name: "nix",
 
-  extras: ($) => [/\s/, $.comment],
+  extras: ($) => [/\s/, $.comment, $.injection_comment],
 
   supertypes: ($) => [$._expression],
 
@@ -35,6 +35,9 @@ module.exports = grammar({
     $.path_fragment,
     $.dollar_escape,
     $._indented_dollar_escape,
+    $._injection_comment_prefix,
+    $.injection_language,
+    $._injection_comment_suffix,
   ],
 
   word: ($) => $.keyword,
@@ -390,6 +393,15 @@ module.exports = grammar({
 
     comment: ($) =>
       token(choice(seq("#", /.*/), seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"))),
+
+    // Line: # bash (suffix is zero-width)
+    // Block: /* bash */ (suffix consumes whitespace + */)
+    injection_comment: ($) =>
+      seq(
+        $._injection_comment_prefix,
+        field("language", $.injection_language),
+        $._injection_comment_suffix,
+      ),
   },
 });
 

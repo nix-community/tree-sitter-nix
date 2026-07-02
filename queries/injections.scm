@@ -1,6 +1,8 @@
-; mark arbitary languages with a comment
-((((comment) @injection.language) .
-  (indented_string_expression (string_fragment) @injection.content))
+; mark arbitrary languages with an injection comment
+((injection_comment
+  language: (injection_language) @injection.language) .
+  [(indented_string_expression (string_fragment) @injection.content)
+   (string_expression (string_fragment) @injection.content)]
   (#set! injection.combined))
 
 ((binding

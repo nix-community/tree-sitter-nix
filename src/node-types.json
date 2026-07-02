@@ -1123,6 +1123,22 @@
     }
   },
   {
+    "type": "injection_comment",
+    "named": true,
+    "fields": {
+      "language": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "injection_language",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "interpolation",
     "named": true,
     "fields": {
@@ -1975,6 +1991,10 @@
   {
     "type": "inherit",
     "named": false
+  },
+  {
+    "type": "injection_language",
+    "named": true
   },
   {
     "type": "integer_expression",
