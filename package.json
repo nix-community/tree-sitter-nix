@@ -5,7 +5,7 @@
   "main": "bindings/node",
   "scripts": {
     "build": "npm run generate && node-gyp build",
-    "build-wasm": "tree-sitter build-wasm",
+    "build-wasm": "tree-sitter build -w",
     "generate": "tree-sitter generate --abi 13",
     "prepublishOnly": "npm run build && npm run build-wasm",
     "test": "tree-sitter test"
