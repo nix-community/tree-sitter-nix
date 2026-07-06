@@ -182,6 +182,20 @@ let inherit a; in c
         (variable_expression (identifier))))
 
 ====================
+inherit (empty)
+====================
+
+let inherit; in c
+
+---
+
+(source_code
+    (let_expression
+        (binding_set
+            (inherit))
+        (variable_expression (identifier))))
+
+====================
 let (inherit from)
 ====================
 
