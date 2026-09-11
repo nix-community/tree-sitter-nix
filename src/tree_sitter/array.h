@@ -219,6 +219,7 @@ static inline void *_array__reserve(void *contents, uint32_t *capacity,
     } else {
       new_contents = ts_malloc(new_capacity * element_size);
     }
+    if (!new_contents) abort();
     *capacity = new_capacity;
   }
   return new_contents;
