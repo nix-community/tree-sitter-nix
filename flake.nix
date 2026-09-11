@@ -110,7 +110,6 @@
         # Inherit GHA actions matrix from a subset of platforms supported by hosted runners
         platforms = {
           "x86_64-linux" = "nscloud-ubuntu-24.04-amd64-4x16";
-          "x86_64-darwin" = "macos-15-intel";
           "aarch64-darwin" = "macos-latest";
           "aarch64-linux" = "nscloud-ubuntu-24.04-arm64-4x16";
         };
@@ -118,7 +117,7 @@
           inherit (self.checks) x86_64-linux;
 
           # Don't run linters on darwin as it's just scheduling overhead
-          x86_64-darwin = builtins.removeAttrs self.checks.x86_64-darwin [ "editorconfig" "generated-diff" "treefmt" ];
+          aarch64-darwin = builtins.removeAttrs self.checks.aarch64-darwin [ "editorconfig" "generated-diff" "treefmt" ];
         };
       };
 
