@@ -90,8 +90,8 @@
                   runHook preBuild
                   # Generate parser using the Nix-provided tree-sitter
                   tree-sitter generate --abi 15
-                  ${pkgs.nodePackages.node-gyp}/bin/node-gyp configure
-                  ${pkgs.nodePackages.node-gyp}/bin/node-gyp build
+                  ${pkgs.node-gyp}/bin/node-gyp configure
+                  ${pkgs.node-gyp}/bin/node-gyp build
                   runHook postBuild
                 '';
                 installPhase = "touch $out";
