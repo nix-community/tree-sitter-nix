@@ -1,5 +1,5 @@
 ; mark arbitary languages with a comment
-((((comment) @injection.language) .
+((((comment contents: _ @injection.language)) .
   (indented_string_expression (string_fragment) @injection.content))
   (#set! injection.combined))
 

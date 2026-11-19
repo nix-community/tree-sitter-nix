@@ -1927,42 +1927,77 @@
       ]
     },
     "comment": {
-      "type": "TOKEN",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "#"
-              },
-              {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "#"
+            },
+            {
+              "type": "IMMEDIATE_TOKEN",
+              "content": {
                 "type": "PATTERN",
-                "value": ".*"
+                "value": "[ \\t]*"
               }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "/*"
-              },
-              {
+            },
+            {
+              "type": "FIELD",
+              "name": "contents",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "IMMEDIATE_TOKEN",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "([^\\s]|[ \\t]+[^\\s])*"
+                  }
+                },
+                "named": false,
+                "value": "contents"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "/*"
+            },
+            {
+              "type": "IMMEDIATE_TOKEN",
+              "content": {
                 "type": "PATTERN",
-                "value": "[^*]*\\*+([^/*][^*]*\\*+)*"
-              },
-              {
-                "type": "STRING",
-                "value": "/"
+                "value": "[ \\t]*"
               }
-            ]
-          }
-        ]
-      }
+            },
+            {
+              "type": "FIELD",
+              "name": "contents",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "IMMEDIATE_TOKEN",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "([^*\\s]|\\s*\\*+[^*/]|\\s+[^*\\s])*"
+                  }
+                },
+                "named": false,
+                "value": "contents"
+              }
+            },
+            {
+              "type": "PATTERN",
+              "value": "\\*+\\/"
+            }
+          ]
+        }
+      ]
     }
   },
   "extras": [
