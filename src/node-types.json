@@ -687,6 +687,23 @@
     }
   },
   {
+    "type": "comment",
+    "named": true,
+    "extra": true,
+    "fields": {
+      "contents": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "contents",
+            "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "formal",
     "named": true,
     "fields": {
@@ -1830,6 +1847,10 @@
     "named": false
   },
   {
+    "type": "#",
+    "named": false
+  },
+  {
     "type": "${",
     "named": false
   },
@@ -1879,6 +1900,10 @@
   },
   {
     "type": "/",
+    "named": false
+  },
+  {
+    "type": "/*",
     "named": false
   },
   {
@@ -1938,9 +1963,8 @@
     "named": false
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true
+    "type": "contents",
+    "named": false
   },
   {
     "type": "dollar_escape",
