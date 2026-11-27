@@ -388,8 +388,32 @@ module.exports = grammar({
     list_expression: ($) =>
       seq("[", repeat(field("element", $._expr_select_expression)), "]"),
 
+    // The inner (whitespace-trimmed) text is an anonymous node in the `contents` field.
+    // If it were named something with "comment" in the name, `tree-sitter test`
+    // would try to use it as a highlight-assertion comment (breaking `# <-` assertions).
     comment: ($) =>
-      token(choice(seq("#", /.*/), seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"))),
+      choice(
+        seq(
+          "#",
+          token.immediate(/[ \t]*/),
+          field(
+            "contents",
+            alias(token.immediate(/([^\s]|[ \t]+[^\s])*/), "contents"),
+          ),
+        ),
+        seq(
+          "/*",
+          token.immediate(/[ \t]*/),
+          field(
+            "contents",
+            alias(
+              token.immediate(/([^*\s]|\s*\*+[^*/]|\s+[^*\s])*/),
+              "contents",
+            ),
+          ),
+          /\*+\//,
+        ),
+      ),
   },
 });
 
